@@ -1,0 +1,12 @@
+{
+  "codeowners": ["@flabbamann"],
+  "config_flow": false,
+  "dependencies": [],
+  "documentation": "https://github.com/flabbamann/aha-ha",
+  "issue_tracker": "https://github.com/flabbamann/aha-ha/issues",
+  "domain": "aha_region",
+  "iot_class": "cloud_polling",
+  "name": "aha",
+  "requirements": ["beautifulsoup4==4.11.1", "requests==2.28.0"],
+  "version": "0.0.1"
+}
