@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 import logging
 import re
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 from bs4 import BeautifulSoup
 
@@ -22,16 +22,19 @@ from homeassistant.helpers.typing import (
 )
 import voluptuous as vol
 
-from .const import CONF_GEMEINDE, CONF_HAUSNR, CONF_HAUSNRADDON, CONF_STRASSE
+from .const import (
+    ABFALLARTEN,
+    CONF_GEMEINDE,
+    CONF_HAUSNR,
+    CONF_HAUSNRADDON,
+    CONF_STRASSE,
+    DOMAIN,
+)
 
 _LOGGER = logging.getLogger(__name__)
-# Time between updating data from GitHub
-SCAN_INTERVAL = timedelta(minutes=10)
 
 URL = "https://www.aha-region.de/abholtermine/abfuhrkalender"
 DATE_RE = re.compile(r"\w{2}, (\d{2}\.\d{2}\.\d{4})")
-
-ABFALLARTEN = ["Restabfall", "Bioabfall", "Papier", "Leichtverpackungen"]
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -60,22 +63,27 @@ async def async_setup_platform(
         config.get(CONF_HAUSNRADDON),
     )
     resp = await api.get_data()
+    sensors = []
+    for wastetype in ABFALLARTEN:
+        hass.data[DOMAIN][wastetype] = datetime.strptime(
+            resp[wastetype].split()[1], "%d.%m.%Y"
+        ).date()
+        sensors.append(AhaWasteSensor(wastetype))
 
-    sensors = [AhaWasteSensor(wastetype, resp[wastetype]) for wastetype in ABFALLARTEN]
     async_add_entities(sensors, update_before_add=True)
 
 
 class AhaWasteSensor(SensorEntity):
     """aha waste sensor"""
 
-    def __init__(self, wastetype: str, value: str) -> None:
+    def __init__(self, wastetype: str) -> None:
         super().__init__()
         self._name = wastetype
         self._attr_name = wastetype
         self._attr_device_class = SensorDeviceClass.DATE
         self._state = None
         self._available = True
-        self._attr_native_value = datetime.strptime(value.split()[1], "%d.%m.%Y").date()
+        self._attr_native_value = None
 
     @property
     def name(self) -> str:
@@ -86,6 +94,10 @@ class AhaWasteSensor(SensorEntity):
     def available(self) -> bool:
         """Return True if entity is available."""
         return self._available
+
+    def update(self) -> None:
+        """Fetch new state data for the sensor."""
+        self._attr_native_value = self.hass.data[DOMAIN][self._name]
 
 
 class AhaApi:
@@ -99,7 +111,7 @@ class AhaApi:
         self._hausnr = hausnr
         self._hausnraddon = hausnraddon
 
-    async def get_data(self) -> Dict[str, str]:
+    async def get_data(self) -> dict[str, str]:
         """Get data from aha website"""
         value = {}
         request = {
@@ -109,24 +121,17 @@ class AhaApi:
             "hausnraddon": str(self._hausnraddon or ""),
         }
         # _LOGGER.info(request)
-        try:
-            response = await self.session.post(URL, data=request)
-            # _LOGGER.info(response)
-            soup = BeautifulSoup(await response.text(), "html.parser")
-            table = soup.find_all("table")[0]
-            # _LOGGER.info(table)
-            for abfallart in ABFALLARTEN:
-                abf = table.find(string=abfallart)
-                termine = (
-                    abf.find_parent("tr")
-                    .find_next_sibling("tr")
-                    .find_all(string=DATE_RE)
-                )
-
-                value[abfallart] = termine[0]
-
-        except Exception as e:
-            _LOGGER.error(e)
+        response = await self.session.post(URL, data=request)
+        # _LOGGER.info(response)
+        soup = BeautifulSoup(await response.text(), "html.parser")
+        table = soup.find_all("table")[0]
+        # _LOGGER.info(table)
+        for abfallart in ABFALLARTEN:
+            abf = table.find(string=abfallart)
+            termine = (
+                abf.find_parent("tr").find_next_sibling("tr").find_all(string=DATE_RE)
+            )
+            value[abfallart] = termine[0]
 
         _LOGGER.info(value)
 

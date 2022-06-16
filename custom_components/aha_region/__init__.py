@@ -2,8 +2,11 @@
 
 from homeassistant import core
 
+from .const import DOMAIN
+
 
 async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
     """Set up the aha component."""
-    # @TODO: Add setup code.
+
+    hass.data[DOMAIN] = {}
     return True
