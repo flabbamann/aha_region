@@ -1,4 +1,5 @@
 """constants for aha custom component"""
+import logging
 from typing import Final
 
 CONF_GEMEINDE: Final = "gemeinde"
@@ -9,3 +10,7 @@ CONF_STRASSE: Final = "strasse"
 DOMAIN: Final = "aha_region"
 
 ABFALLARTEN: Final = ["Restabfall", "Bioabfall", "Papier", "Leichtverpackungen"]
+
+LOGGER = logging.getLogger(__package__)
+
+URL = "https://www.aha-region.de/abholtermine/abfuhrkalender"
