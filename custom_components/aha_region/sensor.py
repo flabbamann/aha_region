@@ -1,16 +1,13 @@
 """aha sensor platform"""
-from typing import Optional
 from collections.abc import Callable
-import voluptuous as vol
-
-from homeassistant.core import callback
-from .coordinator import AhaApi, AhaUpdateCoordinator
+from typing import Optional
 
 from homeassistant.components.sensor import (
     PLATFORM_SCHEMA,
     SensorDeviceClass,
     SensorEntity,
 )
+from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import (
@@ -19,6 +16,7 @@ from homeassistant.helpers.typing import (
     HomeAssistantType,
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+import voluptuous as vol
 
 from .const import (
     ABFALLARTEN,
@@ -27,6 +25,7 @@ from .const import (
     CONF_HAUSNRADDON,
     CONF_STRASSE,
 )
+from .coordinator import AhaApi, AhaUpdateCoordinator
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {

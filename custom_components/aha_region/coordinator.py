@@ -1,15 +1,14 @@
 """update coordinator for aha custom component"""
+from datetime import date, datetime, timedelta
 import re
+
+from aiohttp import ClientSession
 import async_timeout
 from bs4 import BeautifulSoup
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import ABFALLARTEN, LOGGER, URL
-from aiohttp import ClientSession
-from homeassistant.core import HomeAssistant
-
-from datetime import date, datetime, timedelta
-
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 DATE_RE = re.compile(r"\w{2}, (\d{2}\.\d{2}\.\d{4})")
 
@@ -28,7 +27,7 @@ class AhaApi:
         """Initialize."""
         self.session = session
         self._gemeinde = gemeinde
-        self._strasse = strasse.replace(" ", "+")
+        self._strasse = strasse
         self._hausnr = hausnr
         self._hausnraddon = hausnraddon
 
@@ -53,7 +52,7 @@ class AhaApi:
             )
             value[wastetype] = termine[0]
 
-        LOGGER.info(value)
+        LOGGER.info("Refresh successful, next dates: %s", value)
 
         return value
 
@@ -66,10 +65,8 @@ class AhaUpdateCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             LOGGER,
-            # Name of the data. For logging purposes.
             name="aha Region",
-            # Polling interval. Will only be polled if there are subscribers.
-            update_interval=timedelta(seconds=60),
+            update_interval=timedelta(hours=12),
         )
         self.my_api = my_api
 

@@ -13,4 +13,4 @@ ABFALLARTEN: Final = ["Restabfall", "Bioabfall", "Papier", "Leichtverpackungen"]
 
 LOGGER = logging.getLogger(__package__)
 
-URL = "https://www.aha-region.de/abholtermine/abfuhrkalender"
+URL: Final = "https://www.aha-region.de/abholtermine/abfuhrkalender"
