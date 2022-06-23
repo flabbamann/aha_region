@@ -26,3 +26,7 @@ Strasse and gemeinde need to be _exactly_ like on the aha website.
 You should now have a sensor with the next collection date for each waste type.
 
 ![](doc/abfuhrtermine.png)
+
+## Notes
+
+Works great with westenberg's [Garbage Reminder](https://community.home-assistant.io/t/garbage-reminder/284213) 👍

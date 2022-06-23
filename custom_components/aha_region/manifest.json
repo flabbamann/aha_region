@@ -7,6 +7,6 @@
     "domain": "aha_region",
     "iot_class": "cloud_polling",
     "name": "aha region",
-    "requirements": ["beautifulsoup4"],
+    "requirements": ["beautifulsoup4", "aiohttp"],
     "version": "0.0.1"
 }

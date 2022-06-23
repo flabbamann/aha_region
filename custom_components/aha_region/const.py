@@ -1,4 +1,4 @@
-"""constants for aha custom component"""
+"""constants for aha custom component."""
 import logging
 from typing import Final
 

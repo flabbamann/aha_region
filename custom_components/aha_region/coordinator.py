@@ -1,4 +1,4 @@
-"""update coordinator for aha custom component"""
+"""update coordinator for aha custom component."""
 from datetime import date, datetime, timedelta
 import re
 
@@ -14,7 +14,7 @@ DATE_RE = re.compile(r"\w{2}, (\d{2}\.\d{2}\.\d{4})")
 
 
 class AhaApi:
-    """wrapper class for requests"""
+    """wrapper class for requests."""
 
     def __init__(
         self,
@@ -32,7 +32,7 @@ class AhaApi:
         self._hausnraddon = hausnraddon
 
     async def get_data(self) -> dict[str, str]:
-        """Get data from aha website"""
+        """Get data from aha website."""
         value = {}
         request = {
             "gemeinde": self._gemeinde,
@@ -47,10 +47,10 @@ class AhaApi:
         table = soup.find_all("table")[0]
         for wastetype in ABFALLARTEN:
             abf = table.find(string=wastetype)
-            termine = (
+            dates = (
                 abf.find_parent("tr").find_next_sibling("tr").find_all(string=DATE_RE)
             )
-            value[wastetype] = termine[0]
+            value[wastetype] = dates[0]
 
         LOGGER.info("Refresh successful, next dates: %s", value)
 
@@ -58,23 +58,23 @@ class AhaApi:
 
 
 class AhaUpdateCoordinator(DataUpdateCoordinator):
-    """My custom coordinator."""
+    """Aha Update coordinator."""
 
-    def __init__(self, hass: HomeAssistant, my_api: AhaApi) -> None:
-        """Initialize my coordinator."""
+    def __init__(self, hass: HomeAssistant, api: AhaApi) -> None:
+        """Initialize the coordinator."""
         super().__init__(
             hass,
             LOGGER,
             name="aha Region",
             update_interval=timedelta(hours=12),
         )
-        self.my_api = my_api
+        self.api = api
 
     async def _async_update_data(self) -> dict[str, date]:
-        """Fetch data from API endpoint."""
+        """Fetch data from API."""
         async with async_timeout.timeout(10):
             LOGGER.debug("Start async_update_data()")
-            response = await self.my_api.get_data()
+            response = await self.api.get_data()
             result = {}
             for wastetype in ABFALLARTEN:
                 result[wastetype] = datetime.strptime(
