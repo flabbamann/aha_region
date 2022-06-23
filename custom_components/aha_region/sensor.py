@@ -1,4 +1,4 @@
-"""aha sensor platform"""
+"""aha sensor platform."""
 from collections.abc import Callable
 from typing import Optional
 
@@ -59,14 +59,15 @@ async def async_setup_platform(
     await coordinator.async_refresh()
 
     async_add_entities(
-        (AhaWasteSensor(coordinator, wastetype) for wastetype in ABFALLARTEN)
+        AhaWasteSensor(coordinator, wastetype) for wastetype in ABFALLARTEN
     )
 
 
 class AhaWasteSensor(CoordinatorEntity, SensorEntity):
-    """aha waste sensor"""
+    """aha waste sensor."""
 
     def __init__(self, coordinator: AhaUpdateCoordinator, wastetype: str) -> None:
+        """Initialize the sensor."""
         super().__init__(coordinator)
         self._name = wastetype
         self._attr_name = wastetype
@@ -93,5 +94,4 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
 
     async def async_update(self) -> None:
         """Fetch new state data for the sensor."""
-        # Update the data
         await self.coordinator.async_request_refresh()
