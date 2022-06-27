@@ -1,6 +1,8 @@
 # aha region
 Home Assistant custom component for aha (Zweckverband Abfallwirtschaft Region Hannover)
 
+[![CI](https://github.com/flabbamann/aha_region/actions/workflows/ci.yaml/badge.svg)](https://github.com/flabbamann/aha_region/actions/workflows/ci.yaml)
+
 ## Installation
 Copy `custom_components/ah_region` to `custom_components` dir and restart Home Assistant
 
