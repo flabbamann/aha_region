@@ -17,10 +17,10 @@ Configure the component via `configuration.yaml`.
 sensor:
   # aha region waste sensors
   - platform: aha_region
-    gemeinde: Hannover
-    strasse: 00152@Am Küchengarten / Linden-Mitte@Linden-Mitte # value from dropdown
+    gemeinde: "Hannover"
+    strasse: "00152@Am Küchengarten / Linden-Mitte@Linden-Mitte" # value from dropdown
     hausnr: 11
-    hausnraddon: a # optional
+    hausnraddon: "a" # optional
 ```
 Strasse and gemeinde need to be _exactly_ like on the aha website.
 
@@ -31,4 +31,4 @@ You should now have a sensor with the next collection date for each waste type.
 
 ## Notes
 
-Works great with westenberg's [Garbage Reminder](https://community.home-assistant.io/t/garbage-reminder/284213) 👍
+Works great with westenberg's [Garbage Reminder](https://community.home-assistant.io/t/garbage-reminder/284213) blueprint 👍
