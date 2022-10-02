@@ -4,7 +4,7 @@ Home Assistant custom component for aha (Zweckverband Abfallwirtschaft Region Ha
 [![CI](https://github.com/flabbamann/aha_region/actions/workflows/ci.yaml/badge.svg)](https://github.com/flabbamann/aha_region/actions/workflows/ci.yaml)
 
 ## Installation
-Copy `custom_components/ah_region` to `custom_components` dir and restart Home Assistant
+Copy `custom_components/aha_region` to `custom_components` dir and restart Home Assistant
 
 ## Configuration
 Go to https://www.aha-region.de/abholtermine/abfuhrkalender and search for your address. Rightclick the dropdown to select the street and click `inspect`. Expand the select in the sources, find and copy the value for your street.
