@@ -1,13 +1,35 @@
 # aha region
-Home Assistant custom component for aha (Zweckverband Abfallwirtschaft Region Hannover)
+Home Assistant custom component for aha (Zweckverband Abfallwirtschaft Region Hannover). This integration provides the next collection date per waste type for a given address as date-sensors.
+
+The sensors update twice a day and the date will only change _after_ the scheduled collection date. So if the waste collection is scheduled for today, the sensors will show today as next collection date and change tomorrow for the next cycle.
 
 [![CI](https://github.com/flabbamann/aha_region/actions/workflows/ci.yaml/badge.svg)](https://github.com/flabbamann/aha_region/actions/workflows/ci.yaml)
+[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=flabbamann&repository=https%3A%2F%2Fgithub.com%2Fflabbamann%2Faha_region&category=integration)
 
 ## Installation
+
+### [HACS](https://hacs.xyz/) (recommended to get update notifications)
+
+If you setup [My Home Assistant](https://my.home-assistant.io/) just click the badge above.
+
+If not follow these steps:
+
+1. `HACS` > `Integrations` > `⋮` > `Custom Repositories`
+2. `Repository`: paste the url of this repo
+3. `Category`: Integration
+4. Click `Add`
+5. Close `Custom Repositories` dialog
+6. Click `+ EXPLORE & DOWNLOAD REPOSITORIES`
+7. Search for `aha region`
+8. Click `Download`
+9. Restart _Home Assistant_
+
+
+### Manual
 Copy `custom_components/aha_region` to `custom_components` dir and restart Home Assistant
 
 ## Configuration
-Go to https://www.aha-region.de/abholtermine/abfuhrkalender and search for your address. Rightclick the dropdown to select the street and click `inspect`. Expand the select in the sources, find and copy the value for your street.
+Go to https://www.aha-region.de/abholtermine/abfuhrkalender and search for your address. Rightclick the dropdown to select the street and click `inspect`. Expand the select in the sources, find and copy the `value` for your street.
 
 ![](doc/select_strasse.png)
 
@@ -20,7 +42,7 @@ sensor:
     gemeinde: "Hannover"
     strasse: "00152@Am Küchengarten / Linden-Mitte@Linden-Mitte" # value from dropdown
     hausnr: 11
-    hausnraddon: "a" # optional
+    hausnraddon: "a" # optional, remove if not needed for your address!
 ```
 Strasse and gemeinde need to be _exactly_ like on the aha website.
 
