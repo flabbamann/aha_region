@@ -1,16 +1,14 @@
 # aha region
-Home Assistant custom component for aha (Zweckverband Abfallwirtschaft Region Hannover). This integration provides the next collection date per waste type for a given address as date-sensors.
-
-The sensors update twice a day and the date will only change _after_ the scheduled collection date. So if the waste collection is scheduled for today, the sensors will show today as next collection date and change tomorrow for the next cycle.
-
 [![CI](https://github.com/flabbamann/aha_region/actions/workflows/ci.yaml/badge.svg)](https://github.com/flabbamann/aha_region/actions/workflows/ci.yaml)
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=flabbamann&repository=https%3A%2F%2Fgithub.com%2Fflabbamann%2Faha_region&category=integration)
+
+Home Assistant custom component for aha (Zweckverband Abfallwirtschaft Region Hannover). This integration provides the next collection date per waste type for a given address as date-sensors.
 
 ## Installation
 
 ### [HACS](https://hacs.xyz/) (recommended to get update notifications)
 
-If you setup [My Home Assistant](https://my.home-assistant.io/) just click the badge above.
+If you setup [My Home Assistant](https://my.home-assistant.io/) just click the `HACS Custom` badge above.
 
 If not follow these steps:
 
@@ -46,10 +44,30 @@ sensor:
 ```
 Strasse and gemeinde need to be _exactly_ like on the aha website.
 
+
+Some places need to specify an `Abholplatz`, to get this search for your address and another dropdown to select the `Abholplatz` appears. Find your value in the sources like for your street:
+
+![](doc/select_ladeort.png)
+
+This also needs to be _exactly_ like on the website. Note the space at the end of the value!
+
+```yaml
+sensor:
+  # aha region waste sensors
+  - platform: aha_region
+    gemeinde: "Hannover"
+    strasse: "00726@Dragonerstr. / Vahrenwald@Vahrenwald" # value from dropdown
+    hausnr: 35
+    abholplatz: "00726-0035 " # optional, remove if not needed for your address!
+```
+
+
 ## Example
-You should now have a sensor with the next collection date for each waste type.
+You should now have a sensor with the next collection date for each waste type collected at the given address. Not all addresses have all four waste types.
 
 ![](doc/abfuhrtermine.png)
+
+The sensors update twice a day and the date will only change _after_ the scheduled collection date. So if the waste collection is scheduled for today, the sensors will show today as next collection date and change tomorrow for the next cycle.
 
 ## Notes
 

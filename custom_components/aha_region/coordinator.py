@@ -23,6 +23,7 @@ class AhaApi:
         strasse: str,
         hausnr: int,
         hausnraddon: str,
+        ladeort: str,
     ) -> None:
         """Initialize."""
         self.session = session
@@ -30,6 +31,7 @@ class AhaApi:
         self._strasse = strasse
         self._hausnr = hausnr
         self._hausnraddon = hausnraddon
+        self._ladeort = ladeort
 
     async def get_data(self) -> dict[str, str]:
         """Get data from aha website."""
@@ -39,6 +41,7 @@ class AhaApi:
             "strasse": self._strasse,
             "hausnr": str(self._hausnr),
             "hausnraddon": self._hausnraddon,
+            "ladeort": self._ladeort,
         }
         LOGGER.debug("Request data: %s", request)
         response = await self.session.post(URL, data=request)
