@@ -21,7 +21,7 @@ async def test_aha_api():
         # ssl verification fails in the test (certificate expired). no idea why...
         connector=aiohttp.TCPConnector(force_close=True, ssl=False)
     ) as session:
-        api = AhaApi(session, GEMEINDE, STRASSE, HAUSNR, HAUSNRADDON)
+        api = AhaApi(session, GEMEINDE, STRASSE, HAUSNR, HAUSNRADDON, "")
         response = await api.get_data()
         for wastetype in ABFALLARTEN:
             assert (

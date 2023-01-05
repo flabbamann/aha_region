@@ -20,6 +20,7 @@ import voluptuous as vol
 
 from .const import (
     ABFALLARTEN,
+    CONF_ABHOLPLATZ,
     CONF_GEMEINDE,
     CONF_HAUSNR,
     CONF_HAUSNRADDON,
@@ -33,6 +34,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Required(CONF_HAUSNR): cv.positive_int,
         vol.Required(CONF_STRASSE): cv.string,
         vol.Optional(CONF_HAUSNRADDON): cv.string,
+        vol.Optional(CONF_ABHOLPLATZ): cv.string,
     }
 )
 
@@ -52,6 +54,7 @@ async def async_setup_platform(
         str(config.get(CONF_STRASSE)),
         int(config[CONF_HAUSNR]),
         str(config.get(CONF_HAUSNRADDON) or ""),
+        str(config.get(CONF_ABHOLPLATZ) or ""),
     )
 
     coordinator = AhaUpdateCoordinator(hass, api)
