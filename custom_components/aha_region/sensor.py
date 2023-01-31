@@ -16,6 +16,7 @@ from homeassistant.helpers.typing import (
     HomeAssistantType,
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import slugify
 import voluptuous as vol
 
 from .const import (
@@ -48,28 +49,37 @@ async def async_setup_platform(
     """Set up the sensor platform."""
     session = async_get_clientsession(hass)
 
+    strasse = str(config.get(CONF_STRASSE))
+    hausnr = int(config.get(CONF_HAUSNR))
+    hausnraddon = str(config.get(CONF_HAUSNRADDON) or "")
+    abholplatz = str(config.get(CONF_ABHOLPLATZ) or "")
+
     api = AhaApi(
         session,
         str(config.get(CONF_GEMEINDE)),
-        str(config.get(CONF_STRASSE)),
-        int(config[CONF_HAUSNR]),
-        str(config.get(CONF_HAUSNRADDON) or ""),
-        str(config.get(CONF_ABHOLPLATZ) or ""),
+        strasse,
+        hausnr,
+        hausnraddon,
+        abholplatz,
     )
+
+    baseid = slugify(strasse + str(hausnr) + hausnraddon + abholplatz)
 
     coordinator = AhaUpdateCoordinator(hass, api)
 
     await coordinator.async_refresh()
 
     async_add_entities(
-        AhaWasteSensor(coordinator, wastetype) for wastetype in ABFALLARTEN
+        AhaWasteSensor(coordinator, wastetype, baseid) for wastetype in ABFALLARTEN
     )
 
 
 class AhaWasteSensor(CoordinatorEntity, SensorEntity):
     """aha waste sensor."""
 
-    def __init__(self, coordinator: AhaUpdateCoordinator, wastetype: str) -> None:
+    def __init__(
+        self, coordinator: AhaUpdateCoordinator, wastetype: str, baseid: str
+    ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._name = wastetype
@@ -78,6 +88,7 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
         self._state = None
         self._available = True
         self._attr_native_value = self.coordinator.data[self._name]
+        self._attr_unique_id = f"{baseid}_{wastetype}"
 
     @property
     def name(self) -> str:
