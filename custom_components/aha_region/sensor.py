@@ -82,18 +82,12 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
-        self._name = wastetype
         self._attr_name = wastetype
         self._attr_device_class = SensorDeviceClass.DATE
         self._state = None
         self._available = True
-        self._attr_native_value = self.coordinator.data[self._name]
+        self._attr_native_value = self.coordinator.data[self._attr_name]
         self._attr_unique_id = f"{baseid}_{wastetype}"
-
-    @property
-    def name(self) -> str:
-        """Return the name of the entity."""
-        return self._name
 
     @property
     def available(self) -> bool:
@@ -103,7 +97,7 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = self.coordinator.data[self._name]
+        self._attr_native_value = self.coordinator.data[self._attr_name]
         self.async_write_ha_state()
 
     async def async_update(self) -> None:
