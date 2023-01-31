@@ -84,10 +84,15 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self._attr_name = wastetype
         self._attr_device_class = SensorDeviceClass.DATE
-        self._state = None
-        self._available = True
-        self._attr_native_value = self.coordinator.data[self._attr_name]
         self._attr_unique_id = f"{baseid}_{wastetype}"
+        self._state = None
+
+        native_value = self.coordinator.data[self._attr_name]
+        if not native_value:
+            self._available = False
+        else:
+            self._available = True
+            self._attr_native_value = native_value
 
     @property
     def available(self) -> bool:

@@ -49,14 +49,19 @@ class AhaApi:
         soup = BeautifulSoup(await response.text(), "html.parser")
         table = soup.find_all("table")[0]
         for wastetype in ABFALLARTEN:
-            abf = table.find(string=wastetype)
-            dates = (
-                abf.find_parent("tr").find_next_sibling("tr").find_all(string=DATE_RE)
-            )
-            value[wastetype] = dates[0]
+            try:
+                abf = table.find(string=wastetype)
+                dates = (
+                    abf.find_parent("tr")
+                    .find_next_sibling("tr")
+                    .find_all(string=DATE_RE)
+                )
+                value[wastetype] = dates[0]
+            except AttributeError:
+                LOGGER.warning("Wastetype %s not found for given address", wastetype)
+                value[wastetype] = None
 
         LOGGER.info("Refresh successful, next dates: %s", value)
-
         return value
 
 
@@ -80,8 +85,11 @@ class AhaUpdateCoordinator(DataUpdateCoordinator):
             response = await self.api.get_data()
             result = {}
             for wastetype in ABFALLARTEN:
-                result[wastetype] = datetime.strptime(
-                    response[wastetype].split()[1], "%d.%m.%Y"
-                ).date()
+                if response[wastetype] is not None:
+                    result[wastetype] = datetime.strptime(
+                        response[wastetype].split()[1], "%d.%m.%Y"
+                    ).date()
+                else:
+                    result[wastetype] = None
             LOGGER.debug(result)
             return result
