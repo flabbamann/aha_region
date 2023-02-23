@@ -1,12 +1,12 @@
 {
+    "domain": "aha_region",
+    "name": "aha region",
     "codeowners": ["@flabbamann"],
     "config_flow": false,
     "dependencies": [],
     "documentation": "https://github.com/flabbamann/aha_region",
-    "issue_tracker": "https://github.com/flabbamann/aha_region/issues",
-    "domain": "aha_region",
     "iot_class": "cloud_polling",
-    "name": "aha region",
+    "issue_tracker": "https://github.com/flabbamann/aha_region/issues",
     "requirements": ["beautifulsoup4", "aiohttp"],
     "version": "0.0.3"
 }
