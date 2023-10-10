@@ -20,7 +20,6 @@ from homeassistant.util import slugify
 import voluptuous as vol
 
 from .const import (
-    ABFALLARTEN,
     CONF_ABHOLPLATZ,
     CONF_GEMEINDE,
     CONF_HAUSNR,
@@ -70,7 +69,7 @@ async def async_setup_platform(
     await coordinator.async_refresh()
 
     async_add_entities(
-        AhaWasteSensor(coordinator, wastetype, baseid) for wastetype in ABFALLARTEN
+        AhaWasteSensor(coordinator, wastetype, baseid) for wastetype in coordinator.data
     )
 
 
@@ -87,12 +86,8 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
         self._attr_unique_id = f"{baseid}_{wastetype}"
         self._state = None
 
-        native_value = self.coordinator.data[self._attr_name]
-        if not native_value:
-            self._available = False
-        else:
-            self._available = True
-            self._attr_native_value = native_value
+        self._available = True
+        self._attr_native_value = self.coordinator.data[self._attr_name]
 
     @property
     def available(self) -> bool:

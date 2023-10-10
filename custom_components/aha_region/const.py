@@ -10,7 +10,13 @@ CONF_ABHOLPLATZ: Final = "abholplatz"
 
 DOMAIN: Final = "aha_region"
 
-ABFALLARTEN: Final = ["Restabfall", "Bioabfall", "Papier", "Leichtverpackungen"]
+ABFALLARTEN: Final = [
+    "Restabfall",
+    "Bioabfall",
+    "Papier",
+    "Leichtverpackungen",
+    "Restabfall 660/1.100 Liter",
+]
 
 LOGGER = logging.getLogger(__package__)
 

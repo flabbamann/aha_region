@@ -58,8 +58,7 @@ class AhaApi:
                 )
                 value[wastetype] = dates[0]
             except AttributeError:
-                LOGGER.warning("Wastetype %s not found for given address", wastetype)
-                value[wastetype] = None
+                LOGGER.info("Wastetype %s not found for given address", wastetype)
 
         LOGGER.info("Refresh successful, next dates: %s", value)
         return value
@@ -84,12 +83,9 @@ class AhaUpdateCoordinator(DataUpdateCoordinator):
             LOGGER.debug("Start async_update_data()")
             response = await self.api.get_data()
             result = {}
-            for wastetype in ABFALLARTEN:
-                if response[wastetype] is not None:
-                    result[wastetype] = datetime.strptime(
-                        response[wastetype].split()[1], "%d.%m.%Y"
-                    ).date()
-                else:
-                    result[wastetype] = None
+            for wastetype in response:
+                result[wastetype] = datetime.strptime(
+                    response[wastetype].split()[1], "%d.%m.%Y"
+                ).date()
             LOGGER.debug(result)
             return result
