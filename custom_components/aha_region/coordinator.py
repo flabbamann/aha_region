@@ -1,9 +1,9 @@
 """update coordinator for aha custom component."""
+import asyncio
 from datetime import date, datetime, timedelta
 import re
 
 from aiohttp import ClientSession
-import async_timeout
 from bs4 import BeautifulSoup
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -79,7 +79,7 @@ class AhaUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self) -> dict[str, date]:
         """Fetch data from API."""
-        async with async_timeout.timeout(10):
+        async with asyncio.timeout(10):
             LOGGER.debug("Start async_update_data()")
             response = await self.api.get_data()
             result = {}
