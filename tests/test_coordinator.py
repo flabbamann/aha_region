@@ -1,4 +1,5 @@
 """Tests for coordinator."""
+
 from unittest.mock import AsyncMock
 
 import pytest

@@ -1,4 +1,5 @@
 """update coordinator for aha custom component."""
+
 import asyncio
 from datetime import date, datetime, timedelta
 import re

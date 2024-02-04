@@ -1,4 +1,5 @@
 """aha sensor platform."""
+
 from collections.abc import Callable
 from typing import Optional
 
