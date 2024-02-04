@@ -1,4 +1,5 @@
 """Test AhaApi."""
+
 from datetime import date, datetime, timedelta
 
 import aiohttp
