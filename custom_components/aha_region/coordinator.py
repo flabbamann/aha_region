@@ -4,7 +4,7 @@ import asyncio
 from datetime import date, datetime, timedelta
 import re
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientTimeout
 from bs4 import BeautifulSoup
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -44,9 +44,13 @@ class AhaApi:
             "hausnraddon": self._hausnraddon,
             "ladeort": self._ladeort,
         }
+        timeout = ClientTimeout(total=30)
+        LOGGER.debug("Timeout: %s", timeout)
         LOGGER.debug("Request data: %s", request)
-        response = await self.session.post(URL, data=request)
+        response = await self.session.post(URL, data=request, timeout=timeout)
         LOGGER.debug("Response: %s", response)
+        """log the length of the response"""
+        LOGGER.debug("Response length: %s", len(await response.text()))
         soup = BeautifulSoup(await response.text(), "html.parser")
         table = soup.find_all("table")[0]
         for wastetype in ABFALLARTEN:
@@ -74,13 +78,13 @@ class AhaUpdateCoordinator(DataUpdateCoordinator):
             hass,
             LOGGER,
             name="aha Region",
-            update_interval=timedelta(hours=12),
+            update_interval=timedelta(hours=3),
         )
         self.api = api
 
     async def _async_update_data(self) -> dict[str, date]:
         """Fetch data from API."""
-        async with asyncio.timeout(10):
+        async with asyncio.timeout(30):
             LOGGER.debug("Start async_update_data()")
             response = await self.api.get_data()
             result = {}
