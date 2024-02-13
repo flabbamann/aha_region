@@ -9,6 +9,7 @@ from homeassistant.components.sensor import (
     SensorEntity,
 )
 from homeassistant.core import callback
+from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import (
@@ -68,6 +69,9 @@ async def async_setup_platform(
     coordinator = AhaUpdateCoordinator(hass, api)
 
     await coordinator.async_refresh()
+
+    if coordinator.data is None:
+        raise PlatformNotReady("Could not get data from aha website")
 
     async_add_entities(
         AhaWasteSensor(coordinator, wastetype, baseid) for wastetype in coordinator.data
