@@ -8,9 +8,9 @@ import pytest
 from custom_components.aha_region.coordinator import AhaApi
 
 GEMEINDE = "Hannover"
-STRASSE = "00152@Am Küchengarten / Linden-Mitte@Linden-Mitte"
+STRASSE = "00826@Engelbosteler Damm / Nordstadt@Nordstadt"
 HAUSNR = 11
-HAUSNRADDON = "a"
+HAUSNRADDON = ""
 
 
 @pytest.mark.asyncio
