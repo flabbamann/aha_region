@@ -1,7 +1,6 @@
 """aha sensor platform."""
 
 from collections.abc import Callable
-from typing import Optional
 
 from homeassistant.components.sensor import (
     PLATFORM_SCHEMA,
@@ -41,7 +40,7 @@ async def async_setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
     async_add_entities: Callable,
-    discovery_info: Optional[DiscoveryInfoType] = None,
+    discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
     """Set up the sensor platform."""
     session = async_get_clientsession(hass)
