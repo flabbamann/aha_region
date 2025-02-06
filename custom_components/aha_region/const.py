@@ -17,6 +17,10 @@ ABFALLARTEN: Final = [
     "Papier",
     "Leichtverpackungen",
     "Restabfall 660/1.100 Liter",
+    "Unterflur Rest",
+    "Unterflur Bio",
+    "Unterflur Papier",
+    "Unterflur LVP",
 ]
 
 LOGGER = logging.getLogger(__package__)
