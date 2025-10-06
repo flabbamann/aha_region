@@ -87,7 +87,7 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
         self._state = None
 
         self._available = True
-        self._attr_native_value = self.coordinator.data[self._attr_name]
+        self._attr_native_value = self.coordinator.data[self._attr_name][0]
 
     @property
     def available(self) -> bool:
@@ -97,7 +97,7 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = self.coordinator.data[self._attr_name]
+        self._attr_native_value = self.coordinator.data[self._attr_name][0]
         self.async_write_ha_state()
 
     async def async_update(self) -> None:

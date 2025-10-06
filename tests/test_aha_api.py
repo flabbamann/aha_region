@@ -34,6 +34,8 @@ async def test_aha_api():
         for wastetype in response:
             assert (
                 date.today()
-                <= datetime.strptime(response[wastetype].split()[1], "%d.%m.%Y").date()
+                <= datetime.strptime(
+                    response[wastetype][0].split()[1], "%d.%m.%Y"
+                ).date()
                 < date.today() + timedelta(weeks=4)
             )

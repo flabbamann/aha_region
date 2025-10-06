@@ -21,7 +21,10 @@ async def test_async_setup_platform_success():
     }
 
     mock_coordinator = MagicMock()
-    mock_coordinator.data = {"Restmüll": "2024-06-01", "Papier": "2024-06-02"}
+    mock_coordinator.data = {
+        "Restmüll": ["2024-06-01", "2024-06-08]"],
+        "Papier": ["2024-06-02", "2024-06-09]"],
+    }
     mock_coordinator.async_refresh = AsyncMock()
     mock_coordinator.async_refresh.return_value = None
 
@@ -67,7 +70,7 @@ async def test_async_setup_platform_platform_not_ready():
 def test_aha_waste_sensor_properties():
     """Test AhaWasteSensor properties are set correctly."""
     coordinator = MagicMock()
-    coordinator.data = {"Restmüll": "2024-06-01"}
+    coordinator.data = {"Restmüll": ["2024-06-01", "2024-06-08]"]}
     sensor_entity = sensor.AhaWasteSensor(coordinator, "Restmüll", "baseid")
     assert sensor_entity._attr_name == "Restmüll"
     assert sensor_entity._attr_unique_id == "baseid_Restmüll"
@@ -79,7 +82,7 @@ def test_aha_waste_sensor_properties():
 async def test_aha_waste_sensor_update():
     """Test async_update calls coordinator.async_request_refresh."""
     coordinator = MagicMock()
-    coordinator.data = {"Restmüll": "2024-06-01"}
+    coordinator.data = {"Restmüll": ["2024-06-01", "2024-06-08]"]}
     coordinator.async_request_refresh = AsyncMock()
     sensor_entity = sensor.AhaWasteSensor(coordinator, "Restmüll", "baseid")
     await sensor_entity.async_update()
@@ -89,10 +92,12 @@ async def test_aha_waste_sensor_update():
 def test_aha_waste_sensor_handle_coordinator_update():
     """Test _handle_coordinator_update updates native_value and writes state."""
     coordinator = MagicMock()
-    coordinator.data = {"Restmüll": "2024-06-01"}
+    coordinator.data = {"Restmüll": ["2024-06-01", "2024-06-08]"]}
     sensor_entity = sensor.AhaWasteSensor(coordinator, "Restmüll", "baseid")
+    assert sensor_entity.native_value == "2024-06-01"
+
     sensor_entity.async_write_ha_state = MagicMock()
-    coordinator.data["Restmüll"] = "2024-07-01"
+    coordinator.data["Restmüll"] = ["2024-07-01", "2024-07-08]"]
     sensor_entity._handle_coordinator_update()
     assert sensor_entity.native_value == "2024-07-01"
     assert sensor_entity.async_write_ha_state.called
