@@ -1,11 +1,18 @@
 """Test AhaApi."""
 
+import asyncio
 from datetime import date, datetime, timedelta
+import sys
 
 import aiohttp
 import pytest
 
 from custom_components.aha_region.coordinator import AhaApi
+
+# aiodns needs a SelectorEventLoop on Windows.
+# See https://github.com/saghul/aiodns/issues/86
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 GEMEINDE = "Hannover"
 STRASSE = "00826@Engelbosteler Damm / Nordstadt@Nordstadt"
@@ -27,6 +34,8 @@ async def test_aha_api():
         for wastetype in response:
             assert (
                 date.today()
-                <= datetime.strptime(response[wastetype].split()[1], "%d.%m.%Y").date()
+                <= datetime.strptime(
+                    response[wastetype][0].split()[1], "%d.%m.%Y"
+                ).date()
                 < date.today() + timedelta(weeks=4)
             )

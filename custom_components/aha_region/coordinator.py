@@ -34,9 +34,9 @@ class AhaApi:
         self._hausnraddon = hausnraddon
         self._ladeort = ladeort
 
-    async def get_data(self) -> dict[str, str]:
+    async def get_data(self) -> dict[str, list[str]]:
         """Get data from aha website."""
-        value = {}
+        data = {}
         request = {
             "gemeinde": self._gemeinde,
             "strasse": self._strasse,
@@ -56,17 +56,18 @@ class AhaApi:
         for wastetype in ABFALLARTEN:
             try:
                 abf = table.find(string=wastetype)
-                dates = (
-                    abf.find_parent("tr")
-                    .find_next_sibling("tr")
-                    .find_all(string=DATE_RE)
-                )
-                value[wastetype] = dates[0]
+                data[wastetype] = [
+                    str(date_str)
+                    # Ignore types, we catch AttributeError below
+                    for date_str in abf.find_parent("tr")  # type: ignore
+                    .find_next_sibling("tr")  # type: ignore
+                    .find_all(string=DATE_RE)  # type: ignore
+                ]
             except AttributeError:
                 LOGGER.info("Wastetype %s not found for given address", wastetype)
 
-        LOGGER.info("Refresh successful, next dates: %s", value)
-        return value
+        LOGGER.info("Refresh successful, next dates: %s", data)
+        return data
 
 
 class AhaUpdateCoordinator(DataUpdateCoordinator):
@@ -82,15 +83,16 @@ class AhaUpdateCoordinator(DataUpdateCoordinator):
         )
         self.api = api
 
-    async def _async_update_data(self) -> dict[str, date]:
+    async def _async_update_data(self) -> dict[str, list[date]]:
         """Fetch data from API."""
         async with asyncio.timeout(30):
             LOGGER.debug("Start async_update_data()")
             response = await self.api.get_data()
             result = {}
             for wastetype in response:
-                result[wastetype] = datetime.strptime(
-                    response[wastetype].split()[1], "%d.%m.%Y"
-                ).date()
+                list = response[wastetype]
+                result[wastetype] = [
+                    datetime.strptime(s.split()[1], "%d.%m.%Y").date() for s in list
+                ]
             LOGGER.debug(result)
             return result

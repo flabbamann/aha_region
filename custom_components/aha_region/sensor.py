@@ -46,7 +46,8 @@ async def async_setup_platform(
     session = async_get_clientsession(hass)
 
     strasse = str(config.get(CONF_STRASSE))
-    hausnr = int(config.get(CONF_HAUSNR))
+    # CONF_HAUSNR is required and validated as positive_int
+    hausnr = int(config.get(CONF_HAUSNR))  # type: ignore[arg-type]
     hausnraddon = str(config.get(CONF_HAUSNRADDON) or "")
     abholplatz = str(config.get(CONF_ABHOLPLATZ) or "")
 
@@ -81,13 +82,13 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
-        self._attr_name = wastetype
+        self._attr_name: str = wastetype
         self._attr_device_class = SensorDeviceClass.DATE
         self._attr_unique_id = f"{baseid}_{wastetype}"
         self._state = None
 
         self._available = True
-        self._attr_native_value = self.coordinator.data[self._attr_name]
+        self._attr_native_value = self.coordinator.data[self._attr_name][0]
 
     @property
     def available(self) -> bool:
@@ -97,7 +98,7 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._attr_native_value = self.coordinator.data[self._attr_name]
+        self._attr_native_value = self.coordinator.data[self._attr_name][0]
         self.async_write_ha_state()
 
     async def async_update(self) -> None:

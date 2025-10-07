@@ -19,10 +19,22 @@ async def test_get_data_restabfall():
         data = await api.get_data()
 
         assert len(data) == 4
-        assert data["Restabfall"] == "Mi, 11.10.2023"
-        assert data["Bioabfall"] == "Do, 12.10.2023"
-        assert data["Papier"] == "Fr, 13.10.2023"
-        assert data["Leichtverpackungen"] == "Do, 12.10.2023"
+        assert data["Restabfall"] == [
+            "Mi, 11.10.2023",
+            "Mi, 18.10.2023",
+            "Mi, 25.10.2023",
+        ]
+        assert data["Bioabfall"] == [
+            "Do, 12.10.2023",
+            "Do, 19.10.2023",
+            "Do, 26.10.2023",
+        ]
+        assert data["Papier"] == ["Fr, 13.10.2023", "Fr, 20.10.2023", "Fr, 27.10.2023"]
+        assert data["Leichtverpackungen"] == [
+            "Do, 12.10.2023",
+            "Do, 19.10.2023",
+            "Do, 26.10.2023",
+        ]
 
 
 @pytest.mark.asyncio
@@ -37,10 +49,22 @@ async def test_get_data_restabfall_660():
         data = await api.get_data()
 
         assert len(data) == 4
-        assert data["Restabfall 660/1.100 Liter"] == "Mi, 11.10.2023"
-        assert data["Bioabfall"] == "Do, 12.10.2023"
-        assert data["Papier"] == "Fr, 13.10.2023"
-        assert data["Leichtverpackungen"] == "Do, 12.10.2023"
+        assert data["Restabfall 660/1.100 Liter"] == [
+            "Mi, 11.10.2023",
+            "Mi, 18.10.2023",
+            "Mi, 25.10.2023",
+        ]
+        assert data["Bioabfall"] == [
+            "Do, 12.10.2023",
+            "Do, 19.10.2023",
+            "Do, 26.10.2023",
+        ]
+        assert data["Papier"] == ["Fr, 13.10.2023", "Fr, 20.10.2023", "Fr, 27.10.2023"]
+        assert data["Leichtverpackungen"] == [
+            "Do, 12.10.2023",
+            "Do, 19.10.2023",
+            "Do, 26.10.2023",
+        ]
 
 
 @pytest.mark.asyncio
@@ -55,5 +79,9 @@ async def test_get_data_papier_leichtverpackungen():
         data = await api.get_data()
 
         assert len(data) == 2
-        assert data["Papier"] == "Do, 12.10.2023"
-        assert data["Leichtverpackungen"] == "Do, 12.10.2023"
+        assert data["Papier"] == ["Do, 12.10.2023", "Do, 19.10.2023", "Do, 26.10.2023"]
+        assert data["Leichtverpackungen"] == [
+            "Do, 12.10.2023",
+            "Do, 19.10.2023",
+            "Do, 26.10.2023",
+        ]
