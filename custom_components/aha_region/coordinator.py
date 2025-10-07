@@ -56,11 +56,13 @@ class AhaApi:
         for wastetype in ABFALLARTEN:
             try:
                 abf = table.find(string=wastetype)
-                data[wastetype] = (
-                    abf.find_parent("tr")
-                    .find_next_sibling("tr")
-                    .find_all(string=DATE_RE)
-                )
+                data[wastetype] = [
+                    str(date_str)
+                    # Ignore types, we catch AttributeError below
+                    for date_str in abf.find_parent("tr")  # type: ignore
+                    .find_next_sibling("tr")  # type: ignore
+                    .find_all(string=DATE_RE)  # type: ignore
+                ]
             except AttributeError:
                 LOGGER.info("Wastetype %s not found for given address", wastetype)
 
@@ -90,8 +92,7 @@ class AhaUpdateCoordinator(DataUpdateCoordinator):
             for wastetype in response:
                 list = response[wastetype]
                 result[wastetype] = [
-                    datetime.strptime(str(s).split()[1], "%d.%m.%Y").date()
-                    for s in list
+                    datetime.strptime(s.split()[1], "%d.%m.%Y").date() for s in list
                 ]
             LOGGER.debug(result)
             return result
