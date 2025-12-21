@@ -1,7 +1,7 @@
 -r requirements.txt
 
 black==25.12.0
-homeassistant>=2023.7.0
+homeassistant>=2025.12.4
 mypy==1.19.0
 pre-commit==4.5.0
 pytest==8.4.2
