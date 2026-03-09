@@ -4,6 +4,8 @@
 
 Home Assistant custom component for aha (Zweckverband Abfallwirtschaft Region Hannover). This integration provides the next collection date per waste type for a given address as date-sensors.
 
+_DISCLAIMER: This is a personal open source project and doesn't have any connection with aha. The name aha and the logo are property of Zweckverband Abfallwirtschaft Region Hannover._
+
 ## Installation
 
 ### [HACS](https://hacs.xyz/) (recommended to get update notifications)
