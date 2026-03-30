@@ -18,3 +18,10 @@ updates:
       interval: "weekly"
     assignees:
       - "flabbamann"
+
+  - package-ecosystems: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "flabbamann"
