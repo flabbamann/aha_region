@@ -19,7 +19,7 @@ updates:
     assignees:
       - "flabbamann"
 
-  - package-ecosystems: "pre-commit"
+  - package-ecosystem: "pre-commit"
     directory: "/"
     schedule:
       interval: "weekly"
