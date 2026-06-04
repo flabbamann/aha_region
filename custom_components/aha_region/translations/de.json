@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Gemeinde auswählen",
+        "data": {
+          "gemeinde": "Gemeinde"
+        }
+      },
+        "street_initial": {
+          "title": "Anfangsbuchstaben der Straße auswählen",
+          "data": {
+            "street_initial": "Anfangsbuchstabe"
+          }
+        },
+      "address": {
+        "title": "Adresse auswählen",
+        "data": {
+          "strasse": "Straße",
+          "hausnr": "Hausnummer",
+          "hausnraddon": "Hausnummerzusatz"
+        }
+      },
+      "ladeort": {
+        "title": "Abholplatz auswählen",
+        "data": {
+          "abholplatz": "Abholplatz"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zur aha-Website fehlgeschlagen",
+      "invalid_address": "Für diese Adresse wurden keine Abfuhrtermine gefunden"
+    }
+  }
+}

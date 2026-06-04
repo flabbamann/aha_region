@@ -25,6 +25,7 @@ async def test_async_setup_platform_success():
         "Restmüll": ["2024-06-01", "2024-06-08]"],
         "Papier": ["2024-06-02", "2024-06-09]"],
     }
+    mock_coordinator.last_update_success = True
     mock_coordinator.async_refresh = AsyncMock()
     mock_coordinator.async_refresh.return_value = None
 
@@ -35,7 +36,7 @@ async def test_async_setup_platform_success():
         await sensor.async_setup_platform(hass, config, async_add_entities)
         assert async_add_entities.called
         entities = async_add_entities.call_args[0][0]
-        entity_names = [e._attr_name for e in entities]
+        entity_names = [e.name for e in entities]
         assert "Restmüll" in entity_names
         assert "Papier" in entity_names
 
@@ -53,6 +54,7 @@ async def test_async_setup_platform_platform_not_ready():
 
     mock_coordinator = MagicMock()
     mock_coordinator.data = None
+    mock_coordinator.last_update_success = False
     mock_coordinator.async_refresh = AsyncMock()
     mock_coordinator.async_refresh.return_value = None
 
@@ -71,9 +73,12 @@ def test_aha_waste_sensor_properties():
     """Test AhaWasteSensor properties are set correctly."""
     coordinator = MagicMock()
     coordinator.data = {"Restmüll": ["2024-06-01", "2024-06-08]"]}
-    sensor_entity = sensor.AhaWasteSensor(coordinator, "Restmüll", "baseid")
-    assert sensor_entity._attr_name == "Restmüll"
-    assert sensor_entity._attr_unique_id == "baseid_Restmüll"
+    coordinator.last_update_success = True
+    sensor_entity = sensor.AhaWasteSensor(
+        coordinator, "Restmüll", "baseid", "aha region test"
+    )
+    assert sensor_entity.name == "Restmüll"
+    assert sensor_entity.unique_id == "baseid_Restmüll"
     assert sensor_entity.available is True
     assert sensor_entity.native_value == "2024-06-01"
 
@@ -83,8 +88,11 @@ async def test_aha_waste_sensor_update():
     """Test async_update calls coordinator.async_request_refresh."""
     coordinator = MagicMock()
     coordinator.data = {"Restmüll": ["2024-06-01", "2024-06-08]"]}
+    coordinator.last_update_success = True
     coordinator.async_request_refresh = AsyncMock()
-    sensor_entity = sensor.AhaWasteSensor(coordinator, "Restmüll", "baseid")
+    sensor_entity = sensor.AhaWasteSensor(
+        coordinator, "Restmüll", "baseid", "aha region test"
+    )
     await sensor_entity.async_update()
     assert coordinator.async_request_refresh.called
 
@@ -93,11 +101,16 @@ def test_aha_waste_sensor_handle_coordinator_update():
     """Test _handle_coordinator_update updates native_value and writes state."""
     coordinator = MagicMock()
     coordinator.data = {"Restmüll": ["2024-06-01", "2024-06-08]"]}
-    sensor_entity = sensor.AhaWasteSensor(coordinator, "Restmüll", "baseid")
+    coordinator.last_update_success = True
+    sensor_entity = sensor.AhaWasteSensor(
+        coordinator, "Restmüll", "baseid", "aha region test"
+    )
     assert sensor_entity.native_value == "2024-06-01"
 
     sensor_entity.async_write_ha_state = MagicMock()
     coordinator.data["Restmüll"] = ["2024-07-01", "2024-07-08]"]
+    # Direct callback invocation keeps this unit test independent from hass setup.
+    # pylint: disable=protected-access
     sensor_entity._handle_coordinator_update()
     assert sensor_entity.native_value == "2024-07-01"
     assert sensor_entity.async_write_ha_state.called
