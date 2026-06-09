@@ -83,8 +83,10 @@ async def _async_setup_entities(
     session = async_get_clientsession(hass)
 
     strasse = str(config.get(CONF_STRASSE))
-    # CONF_HAUSNR is required and validated as positive_int
-    hausnr = int(config.get(CONF_HAUSNR))  # type: ignore[arg-type]
+    hausnr_value = config.get(CONF_HAUSNR)
+    if not isinstance(hausnr_value, int):
+        raise PlatformNotReady("Invalid house number configuration")
+    hausnr = hausnr_value
     hausnraddon = str(config.get(CONF_HAUSNRADDON) or "")
     abholplatz = str(config.get(CONF_ABHOLPLATZ) or "")
 

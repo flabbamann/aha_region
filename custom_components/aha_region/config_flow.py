@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from collections.abc import Mapping
 
 from aiohttp import ClientError
@@ -27,7 +26,9 @@ from .coordinator import AhaApi
 CONF_STREET_INITIAL = "street_initial"
 
 
-class AhaRegionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class AhaRegionConfigFlow(  # type: ignore[call-arg]
+    config_entries.ConfigFlow, domain=DOMAIN
+):
     """Handle a config flow for aha_region."""
 
     VERSION = 1
@@ -55,7 +56,7 @@ class AhaRegionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         try:
             self._gemeinden = await self._get_api().get_gemeinden()
-        except (ClientError, TimeoutError, asyncio.TimeoutError):
+        except (ClientError, TimeoutError):
             errors["base"] = "cannot_connect"
 
         return self.async_show_form(
@@ -83,7 +84,7 @@ class AhaRegionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self._street_initials = await self._get_api().get_street_initials(
                     str(self._data[CONF_GEMEINDE])
                 )
-        except (ClientError, TimeoutError, asyncio.TimeoutError):
+        except (ClientError, TimeoutError):
             errors["base"] = "cannot_connect"
 
         if user_input is not None and not errors:
@@ -121,7 +122,7 @@ class AhaRegionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     str(self._data[CONF_GEMEINDE]),
                     self._selected_street_initial,
                 )
-        except (ClientError, TimeoutError, asyncio.TimeoutError):
+        except (ClientError, TimeoutError):
             errors["base"] = "cannot_connect"
 
         if user_input is not None and not errors:
@@ -140,7 +141,7 @@ class AhaRegionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     hausnr,
                     hausnraddon,
                 )
-            except (ClientError, TimeoutError, asyncio.TimeoutError):
+            except (ClientError, TimeoutError):
                 errors["base"] = "cannot_connect"
 
             if not errors and self._ladeorte:
@@ -174,7 +175,9 @@ class AhaRegionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_ABHOLPLATZ): selector.SelectSelector(
-                        selector.SelectSelectorConfig(options=sorted(self._ladeorte.keys()))
+                        selector.SelectSelectorConfig(
+                            options=sorted(self._ladeorte.keys())
+                        )
                     )
                 }
             ),
@@ -185,7 +188,7 @@ class AhaRegionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Validate the selected address against the calendar page."""
         try:
             data = await self._get_api(self._data).get_data()
-        except (ClientError, TimeoutError, asyncio.TimeoutError):
+        except (ClientError, TimeoutError):
             return self._show_address_form(
                 {"base": "cannot_connect"},
                 self._selected_strassen_label,
@@ -225,12 +228,12 @@ class AhaRegionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Required(
                         CONF_STRASSE, default=default_strasse
                     ): selector.SelectSelector(
-                        selector.SelectSelectorConfig(options=sorted(self._strassen.keys()))
+                        selector.SelectSelectorConfig(
+                            options=sorted(self._strassen.keys())
+                        )
                     ),
                     vol.Required(CONF_HAUSNR, default=default_hausnr): vol.Coerce(int),
-                    vol.Optional(
-                        CONF_HAUSNRADDON, default=default_hausnraddon
-                    ): str,
+                    vol.Optional(CONF_HAUSNRADDON, default=default_hausnraddon): str,
                 }
             ),
             errors=errors,

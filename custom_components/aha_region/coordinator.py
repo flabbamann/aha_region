@@ -116,7 +116,7 @@ class AhaApi:
 
     async def get_data(self) -> dict[str, list[str]]:
         """Get data from aha website."""
-        data = {}
+        data: dict[str, list[str]] = {}
         request = {
             "gemeinde": self._gemeinde,
             "strasse": self._strasse,

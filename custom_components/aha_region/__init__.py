@@ -27,6 +27,7 @@ class AhaRuntimeData:
     coordinator: AhaUpdateCoordinator
     base_id: str
 
+
 # Home Assistant integrations commonly expose this constant in upper-case.
 # pylint: disable=invalid-name
 CONFIG_SCHEMA = cv.platform_only_config_schema(DOMAIN)
@@ -38,9 +39,7 @@ async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
     return True
 
 
-async def async_setup_entry(
-    hass: core.HomeAssistant, entry: ConfigEntry
-) -> bool:
+async def async_setup_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up aha_region from a config entry."""
     session = async_get_clientsession(hass)
 
@@ -70,9 +69,7 @@ async def async_setup_entry(
     return True
 
 
-async def async_unload_entry(
-    hass: core.HomeAssistant, entry: ConfigEntry
-) -> bool:
+async def async_unload_entry(hass: core.HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload an aha_region config entry."""
     unloaded = await hass.config_entries.async_unload_platforms(entry, ["sensor"])
     if unloaded:

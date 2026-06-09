@@ -14,7 +14,7 @@
           }
         },
       "address": {
-        "title": "Adresse auswählen",
+        "title": "Anschrift auswählen",
         "data": {
           "strasse": "Straße",
           "hausnr": "Hausnummer",
@@ -30,7 +30,7 @@
     },
     "error": {
       "cannot_connect": "Verbindung zur aha-Website fehlgeschlagen",
-      "invalid_address": "Für diese Adresse wurden keine Abfuhrtermine gefunden"
+      "invalid_address": "Für diese Anschrift wurden keine Abfuhrtermine gefunden"
     }
   }
 }

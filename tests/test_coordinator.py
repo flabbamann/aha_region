@@ -7,6 +7,9 @@ import pytest
 
 from custom_components.aha_region.coordinator import AhaApi
 
+STREET_OPTION_VALUE = "00152@Am Küchengarten / " "Linden-Mitte@Linden-Mitte"
+STREET_OPTION_LABEL = "Am Küchengarten / Linden-Mitte"
+
 FORM_HTML = """
 <html>
     <body>
@@ -19,7 +22,7 @@ FORM_HTML = """
         </select>
         <select name="strasse" id="strasse">
             <option value="">Bitte wählen</option>
-            <option value="00152@Am Küchengarten / Linden-Mitte@Linden-Mitte">Am Küchengarten / Linden-Mitte</option>
+            <option value="{street_option_value}">{street_option_label}</option>
         </select>
         <select name="ladeort" id="ladeort">
             <option value="">Bitte wählen</option>
@@ -27,7 +30,10 @@ FORM_HTML = """
         </select>
     </body>
 </html>
-"""
+""".format(
+    street_option_value=STREET_OPTION_VALUE,
+    street_option_label=STREET_OPTION_LABEL,
+)
 
 RESPONSES_DIR = Path("tests/responses")
 
@@ -143,11 +149,7 @@ async def test_get_strassen_posts_selected_gemeinde(
 
     assert gemeinden == {"Hannover": "Hannover", "Laatzen": "Laatzen"}
     assert initials == {"A": "A", "D": "D"}
-    assert data == {
-        "Am Küchengarten / Linden-Mitte": (
-            "00152@Am Küchengarten / Linden-Mitte@Linden-Mitte"
-        )
-    }
+    assert data == {"Am Küchengarten / Linden-Mitte": STREET_OPTION_VALUE}
     assert form_html_session.post.await_count == 3
     assert form_html_session.post.await_args.kwargs["data"] == {
         "gemeinde": "Hannover",

@@ -91,9 +91,7 @@ async def test_async_step_address_routes_to_ladeort_step(
     """Test that the flow shows the pickup place step when required."""
     mock_api.get_strassen = AsyncMock(
         return_value={
-            "Dragonerstr. / Vahrenwald": (
-                "00726@Dragonerstr. / Vahrenwald@Vahrenwald"
-            )
+            "Dragonerstr. / Vahrenwald": ("00726@Dragonerstr. / Vahrenwald@Vahrenwald")
         }
     )
     mock_api.get_ladeorte = AsyncMock(
