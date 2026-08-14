@@ -12,7 +12,6 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -26,7 +25,6 @@ from .const import (
     CONF_HAUSNR,
     CONF_HAUSNRADDON,
     CONF_STRASSE,
-    DOMAIN,
 )
 from .coordinator import AhaApi, AhaUpdateCoordinator
 
@@ -64,12 +62,7 @@ async def async_setup_entry(
         raise PlatformNotReady("Could not get data from aha website")
 
     async_add_entities(
-        AhaWasteSensor(
-            runtime_data.coordinator,
-            wastetype,
-            runtime_data.base_id,
-            entry.title,
-        )
+        AhaWasteSensor(runtime_data.coordinator, wastetype, runtime_data.base_id)
         for wastetype in runtime_data.coordinator.data
     )
 
@@ -108,10 +101,8 @@ async def _async_setup_entities(
     if coordinator.data is None:
         raise PlatformNotReady("Could not get data from aha website")
 
-    device_name = f"aha region {str(config.get(CONF_GEMEINDE))}"
     async_add_entities(
-        AhaWasteSensor(coordinator, wastetype, baseid, device_name)
-        for wastetype in coordinator.data
+        AhaWasteSensor(coordinator, wastetype, baseid) for wastetype in coordinator.data
     )
 
 
@@ -123,7 +114,6 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
         coordinator: AhaUpdateCoordinator,
         wastetype: str,
         baseid: str,
-        device_name: str,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
@@ -131,11 +121,6 @@ class AhaWasteSensor(CoordinatorEntity, SensorEntity):
         self._attr_name: str = wastetype
         self._attr_device_class = SensorDeviceClass.DATE
         self._attr_unique_id = f"{baseid}_{wastetype}"
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, baseid)},
-            name=device_name,
-            manufacturer="aha region",
-        )
         self._attr_native_value = self._get_native_value()
 
     def _get_native_value(self):
