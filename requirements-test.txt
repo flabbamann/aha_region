@@ -2,7 +2,7 @@
 
 black==26.5.1
 homeassistant>=2025.12.4
-mypy==2.1.0
+mypy==2.3.0
 pre-commit==4.6.2
 pytest==9.0.3
 pytest-asyncio==1.4.0
