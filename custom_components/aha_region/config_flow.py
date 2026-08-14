@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
+import voluptuous as vol
 from aiohttp import ClientError
 from homeassistant import config_entries
 from homeassistant.core import callback
@@ -11,7 +12,6 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util import slugify
-import voluptuous as vol
 
 from .const import (
     CONF_ABHOLPLATZ,

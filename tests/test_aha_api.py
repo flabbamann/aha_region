@@ -1,8 +1,8 @@
 """Test AhaApi."""
 
 import asyncio
-from datetime import date, datetime, timedelta
 import sys
+from datetime import date, datetime, timedelta
 
 import aiohttp
 import pytest

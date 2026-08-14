@@ -4,14 +4,14 @@ repos:
     hooks:
       - id: pyupgrade
         args: [--py311-plus]
-  - repo: https://github.com/psf/black
-    rev: 26.5.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.3
     hooks:
-      - id: black
-        args:
-          - --safe
-          - --quiet
-        files: ^((custom_components|script|tests)/.+)?[^/]+\.py$
+      # Run the linter.
+      - id: ruff-check
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.3
     hooks:
@@ -19,18 +19,6 @@ repos:
         args:
           - --ignore-words-list=hass,termine
           - --skip=setup.cfg
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.3.0
-    hooks:
-      - id: flake8
-        additional_dependencies:
-          - flake8-docstrings==1.7.0
-          - pydocstyle==6.3.0
-        files: ^((custom_components|script|tests)/.+)?[^/]+\.py$
-  - repo: https://github.com/PyCQA/isort
-    rev: 8.0.1
-    hooks:
-      - id: isort
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
