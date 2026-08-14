@@ -6,9 +6,8 @@ from collections.abc import Mapping
 
 import voluptuous as vol
 from aiohttp import ClientError
-from homeassistant import config_entries
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util import slugify
@@ -26,9 +25,7 @@ from .coordinator import AhaApi
 CONF_STREET_INITIAL = "street_initial"
 
 
-class AhaRegionConfigFlow(  # type: ignore[call-arg]
-    config_entries.ConfigFlow, domain=DOMAIN
-):
+class AhaRegionConfigFlow(ConfigFlow, domain=DOMAIN):  # type: ignore[call-arg]
     """Handle a config flow for aha_region."""
 
     VERSION = 1
@@ -45,7 +42,7 @@ class AhaRegionConfigFlow(  # type: ignore[call-arg]
 
     async def async_step_user(
         self, user_input: dict[str, str] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Select a municipality."""
         errors: dict[str, str] = {}
 
@@ -75,7 +72,7 @@ class AhaRegionConfigFlow(  # type: ignore[call-arg]
 
     async def async_step_street_initial(
         self, user_input: dict[str, str] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Select the first letter of the street name."""
         errors: dict[str, str] = {}
 
@@ -109,7 +106,7 @@ class AhaRegionConfigFlow(  # type: ignore[call-arg]
 
     async def async_step_address(
         self, user_input: dict[str, str | int] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Select the street and house number."""
         errors: dict[str, str] = {}
         default_strasse = user_input.get(CONF_STRASSE) if user_input else None
@@ -163,7 +160,7 @@ class AhaRegionConfigFlow(  # type: ignore[call-arg]
 
     async def async_step_ladeort(
         self, user_input: dict[str, str] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Select the pickup place when the address requires one."""
         if user_input is not None:
             ladeort_label = user_input[CONF_ABHOLPLATZ]
@@ -184,24 +181,38 @@ class AhaRegionConfigFlow(  # type: ignore[call-arg]
             errors={},
         )
 
-    async def _async_validate_and_create_entry(self) -> FlowResult:
+    async def async_step_import(
+        self, user_input: dict[str, str | int]
+    ) -> ConfigFlowResult:
+        """Import a legacy YAML configuration into a config entry."""
+        self._data = dict(user_input)
+        self._selected_strassen_label = str(self._data.get(CONF_STRASSE, ""))
+        return await self._async_validate_and_create_entry()
+
+    async def _async_validate_and_create_entry(self) -> ConfigFlowResult:
         """Validate the selected address against the calendar page."""
+        hausnr = int(self._data.get(CONF_HAUSNR, 0))
+        hausnraddon = str(self._data.get(CONF_HAUSNRADDON, ""))
+        street_label = self._selected_strassen_label or str(
+            self._data.get(CONF_STRASSE, "")
+        )
+
         try:
             data = await self._get_api(self._data).get_data()
         except (ClientError, TimeoutError):
             return self._show_address_form(
                 {"base": "cannot_connect"},
-                self._selected_strassen_label,
-                int(self._data[CONF_HAUSNR]),
-                str(self._data[CONF_HAUSNRADDON]),
+                street_label,
+                hausnr,
+                hausnraddon,
             )
 
         if not data:
             return self._show_address_form(
                 {"base": "invalid_address"},
-                self._selected_strassen_label,
-                int(self._data[CONF_HAUSNR]),
-                str(self._data[CONF_HAUSNRADDON]),
+                street_label,
+                hausnr,
+                hausnraddon,
             )
 
         entry_unique_id = self._build_unique_id(self._data)
@@ -219,7 +230,7 @@ class AhaRegionConfigFlow(  # type: ignore[call-arg]
         default_strasse: object,
         default_hausnr: object,
         default_hausnraddon: object,
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Show the address step with the latest defaults."""
         return self.async_show_form(
             step_id="address",
@@ -269,14 +280,17 @@ class AhaRegionConfigFlow(  # type: ignore[call-arg]
 
     def _build_entry_title(self) -> str:
         """Build a readable title for the config entry."""
-        hausnraddon = str(self._data[CONF_HAUSNRADDON]).strip()
-        title = (
-            f"{self._selected_strassen_label} {self._data[CONF_HAUSNR]}"
-            f"{hausnraddon}, {self._data[CONF_GEMEINDE]}"
+        street_label = self._selected_strassen_label or str(
+            self._data.get(CONF_STRASSE, "")
         )
+        hausnraddon = self._data.get(CONF_HAUSNRADDON)
+        hausnraddon_text = "" if hausnraddon is None else str(hausnraddon).strip()
+        hausnr = self._data.get(CONF_HAUSNR, 0)
+
+        title = f"{street_label} {hausnr}{hausnraddon_text}, {self._data.get(CONF_GEMEINDE, '')}"
         return title.strip()
 
-    def is_matching(self, other_flow: config_entries.ConfigFlow) -> bool:
+    def is_matching(self, other_flow: ConfigFlow) -> bool:
         """Return True when two in-progress flows target the same address."""
         del other_flow
         return False

@@ -7,12 +7,12 @@
           "gemeinde": "Gemeinde"
         }
       },
-        "street_initial": {
-          "title": "Anfangsbuchstaben der Straße auswählen",
-          "data": {
-            "street_initial": "Anfangsbuchstabe"
-          }
-        },
+      "street_initial": {
+        "title": "Anfangsbuchstaben der Straße auswählen",
+        "data": {
+          "street_initial": "Anfangsbuchstabe"
+        }
+      },
       "address": {
         "title": "Anschrift auswählen",
         "data": {
@@ -31,6 +31,12 @@
     "error": {
       "cannot_connect": "Verbindung zur aha-Website fehlgeschlagen",
       "invalid_address": "Für diese Anschrift wurden keine Abfuhrtermine gefunden"
+    }
+  },
+  "issues": {
+    "yaml_config_removal": {
+      "title": "YAML-Konfiguration entfernen",
+      "description": "Die Konfiguration für die aha_region-Integration wurde aus configuration.yaml importiert und kann entfernt werden, wenn die Sensoren korrekt funktionieren."
     }
   }
 }
