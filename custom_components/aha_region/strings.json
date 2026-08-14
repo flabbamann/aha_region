@@ -1,0 +1,36 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Select municipality",
+        "data": {
+          "gemeinde": "Municipality"
+        }
+      },
+        "street_initial": {
+          "title": "Select first street letter",
+          "data": {
+            "street_initial": "First letter"
+          }
+        },
+      "address": {
+        "title": "Select address",
+        "data": {
+          "strasse": "Street",
+          "hausnr": "House number",
+          "hausnraddon": "House number suffix"
+        }
+      },
+      "ladeort": {
+        "title": "Select pickup place",
+        "data": {
+          "abholplatz": "Pickup place"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the aha website",
+      "invalid_address": "No waste collection dates were found for this address"
+    }
+  }
+}

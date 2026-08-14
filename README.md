@@ -29,6 +29,18 @@ If not follow these steps:
 Copy `custom_components/aha_region` to `custom_components` dir and restart Home Assistant
 
 ## Configuration
+The integration can be configured via the Home Assistant UI.
+
+1. Go to `Settings` > `Devices & services`.
+2. Click `Add integration` and search for `aha region`.
+3. Select your `Gemeinde`.
+4. Select the first letter of your street.
+5. Select your street from the scraped website values.
+6. Enter the house number and an optional house number suffix.
+7. If aha requires an `Abholplatz` for the address, the flow will show the scraped options automatically.
+
+You can still configure the component via `configuration.yaml`.
+
 Go to https://www.aha-region.de/abholtermine/abfuhrkalender and search for your address. Rightclick the dropdown to select the street and click `inspect`. Expand the select in the sources, find and copy the `value` for your street.
 
 ![](doc/select_strasse.png)
