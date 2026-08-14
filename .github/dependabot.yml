@@ -9,19 +9,15 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
-    assignees:
-      - "flabbamann"
+    ignore:
+      - dependency-name: "homeassistant"
   
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    assignees:
-      - "flabbamann"
 
   - package-ecosystem: "pre-commit"
     directory: "/"
     schedule:
       interval: "weekly"
-    assignees:
-      - "flabbamann"
