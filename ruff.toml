@@ -1,4 +1,0 @@
-[lint]
-# DTZ007 Ignore timezones
-# DTZ011 Ignore timezones
-ignore = ["DTZ007", "DTZ011"]
