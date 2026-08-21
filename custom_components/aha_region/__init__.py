@@ -2,11 +2,11 @@
 
 from dataclasses import dataclass
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant import core
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-import homeassistant.helpers.config_validation as cv
 from homeassistant.util import slugify
 
 from .const import (

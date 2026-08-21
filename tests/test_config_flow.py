@@ -57,9 +57,11 @@ async def test_async_step_address_creates_entry_without_ladeort(
     flow: AhaRegionConfigFlow, mock_api: MagicMock
 ) -> None:
     """Test that a valid address creates a config entry directly."""
-    with patch.object(flow, "_get_api", return_value=mock_api), patch.object(
-        flow, "async_set_unique_id", AsyncMock()
-    ), patch.object(flow, "_abort_if_unique_id_configured"):
+    with (
+        patch.object(flow, "_get_api", return_value=mock_api),
+        patch.object(flow, "async_set_unique_id", AsyncMock()),
+        patch.object(flow, "_abort_if_unique_id_configured"),
+    ):
         await flow.async_step_user()
         result = await flow.async_step_user({CONF_GEMEINDE: "Hannover"})
         assert result["type"] == "form"

@@ -7,10 +7,10 @@ import pytest
 
 from custom_components.aha_region.coordinator import AhaApi
 
-STREET_OPTION_VALUE = "00152@Am Küchengarten / " "Linden-Mitte@Linden-Mitte"
+STREET_OPTION_VALUE = "00152@Am Küchengarten / Linden-Mitte@Linden-Mitte"
 STREET_OPTION_LABEL = "Am Küchengarten / Linden-Mitte"
 
-FORM_HTML = """
+FORM_HTML = f"""
 <html>
     <body>
         <a class="btn" onclick="submitFormWithExtraValue('A')">A</a>
@@ -22,7 +22,7 @@ FORM_HTML = """
         </select>
         <select name="strasse" id="strasse">
             <option value="">Bitte wählen</option>
-            <option value="{street_option_value}">{street_option_label}</option>
+            <option value="{STREET_OPTION_VALUE}">{STREET_OPTION_LABEL}</option>
         </select>
         <select name="ladeort" id="ladeort">
             <option value="">Bitte wählen</option>
@@ -30,10 +30,7 @@ FORM_HTML = """
         </select>
     </body>
 </html>
-""".format(
-    street_option_value=STREET_OPTION_VALUE,
-    street_option_label=STREET_OPTION_LABEL,
-)
+"""
 
 RESPONSES_DIR = Path("tests/responses")
 

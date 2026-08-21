@@ -58,15 +58,18 @@ async def test_async_setup_platform_platform_not_ready():
     mock_coordinator.async_refresh = AsyncMock()
     mock_coordinator.async_refresh.return_value = None
 
-    with patch(
-        "custom_components.aha_region.sensor.AhaUpdateCoordinator",
-        return_value=mock_coordinator,
-    ), patch(
-        "custom_components.aha_region.sensor.async_get_clientsession",
-        return_value=MagicMock(),
+    with (
+        patch(
+            "custom_components.aha_region.sensor.AhaUpdateCoordinator",
+            return_value=mock_coordinator,
+        ),
+        patch(
+            "custom_components.aha_region.sensor.async_get_clientsession",
+            return_value=MagicMock(),
+        ),
+        pytest.raises(sensor.PlatformNotReady),
     ):
-        with pytest.raises(sensor.PlatformNotReady):
-            await sensor.async_setup_platform(hass, config, async_add_entities)
+        await sensor.async_setup_platform(hass, config, async_add_entities)
 
 
 def test_aha_waste_sensor_properties():

@@ -1,8 +1,8 @@
 """update coordinator for aha custom component."""
 
 import asyncio
-from datetime import date, datetime, timedelta
 import re
+from datetime import date, datetime, timedelta
 
 from aiohttp import ClientSession, ClientTimeout
 from bs4 import BeautifulSoup
