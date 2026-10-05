@@ -7,12 +7,12 @@
           "gemeinde": "Municipality"
         }
       },
-        "street_initial": {
-          "title": "Select first street letter",
-          "data": {
-            "street_initial": "First letter"
-          }
-        },
+      "street_initial": {
+        "title": "Select first street letter",
+        "data": {
+          "street_initial": "First letter"
+        }
+      },
       "address": {
         "title": "Select address",
         "data": {
@@ -31,6 +31,12 @@
     "error": {
       "cannot_connect": "Failed to connect to the aha website",
       "invalid_address": "No waste collection dates were found for this address"
+    }
+  },
+  "issues": {
+    "yaml_config_removal": {
+      "title": "Remove legacy YAML configuration",
+      "description": "The aha_region integration has been imported from YAML. Remove the legacy sensor configuration from configuration.yaml once the imported entry is working correctly."
     }
   }
 }

@@ -3,9 +3,10 @@
 from dataclasses import dataclass
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant import core
+from homeassistant import config_entries, core
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util import slugify
 
@@ -33,9 +34,48 @@ class AhaRuntimeData:
 CONFIG_SCHEMA = cv.platform_only_config_schema(DOMAIN)
 
 
+def _legacy_yaml_configs(config: dict) -> list[dict]:
+    """Return YAML sensor configurations that should be imported."""
+    if not isinstance(config, dict):
+        return []
+
+    entries: list[dict] = []
+    for platform_config in config.get("sensor", []):
+        if not isinstance(platform_config, dict):
+            continue
+        if platform_config.get("platform") != DOMAIN:
+            continue
+        yaml_data = dict(platform_config)
+        yaml_data.pop("platform", None)
+        entries.append(yaml_data)
+    return entries
+
+
 async def async_setup(hass: core.HomeAssistant, config: dict) -> bool:
     """Set up the aha component."""
-    del hass, config
+    yaml_configs = _legacy_yaml_configs(config)
+
+    if yaml_configs:
+        for yaml_config in yaml_configs:
+            hass.async_create_task(
+                hass.config_entries.flow.async_init(
+                    DOMAIN,
+                    context={"source": config_entries.SOURCE_IMPORT},
+                    data=yaml_config,
+                )
+            )
+
+        ir.async_create_issue(
+            hass,
+            DOMAIN,
+            "yaml_config_removal",
+            is_fixable=False,
+            severity=ir.IssueSeverity.WARNING,
+            translation_key="yaml_config_removal",
+        )
+        return True
+
+    ir.async_delete_issue(hass, DOMAIN, "yaml_config_removal")
     return True
 
 
