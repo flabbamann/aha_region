@@ -136,9 +136,11 @@ async def test_async_step_import_creates_entry(
         CONF_ABHOLPLATZ: "",
     }
 
-    with patch.object(flow, "_get_api", return_value=mock_api), patch.object(
-        flow, "async_set_unique_id", AsyncMock()
-    ), patch.object(flow, "_abort_if_unique_id_configured"):
+    with (
+        patch.object(flow, "_get_api", return_value=mock_api),
+        patch.object(flow, "async_set_unique_id", AsyncMock()),
+        patch.object(flow, "_abort_if_unique_id_configured"),
+    ):
         result = await flow.async_step_import(user_input)
 
     assert result["type"] == "create_entry"
