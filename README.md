@@ -39,11 +39,6 @@ The integration can be configured via the Home Assistant UI.
 6. Enter the house number and an optional house number suffix.
 7. If aha requires an `Abholplatz` for the address, the flow will show the scraped options automatically.
 
-![](doc/select_strasse.png)
-
-Configure the component via `configuration.yaml`.
-
-
 ## Example
 You should now have a sensor with the next collection date for each waste type collected at the given address. Not all addresses have all four waste types.
 
