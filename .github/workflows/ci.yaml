@@ -28,7 +28,6 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
-          ignore: brands
 
   pre-commit:
     name: pre-commit
